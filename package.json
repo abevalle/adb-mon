@@ -1,0 +1,22 @@
+{
+  "name": "adb-mon",
+  "version": "1.0.0",
+  "description": "The all powerful ADB-MON a tool for work that gives easy control and management for android based signage devices",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abevalle/adb-mon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abevalle/adb-mon/issues"
+  },
+  "homepage": "https://github.com/abevalle/adb-mon#readme",
+  "dependencies": {
+    "adbkit": "^2.11.1"
+  }
+}
