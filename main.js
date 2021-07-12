@@ -1,33 +1,37 @@
-var adb = require('adbkit');
-var client = adb.createClient();
+const adb = require('./adb')
+const db = require('./db')
 
 
+const main = async  () => {
+    // Pull ip list from database
+    let devices = await db.getDeviceWatchList();
 
-client.connect('10.28.0.13', 5555, function(err, id) {
-    // let deviceId = '10.1.108.235:5555'
-    let deviceId = '10.0.28.13:5555'
-    console.log('Device connected')
-    client.listDevices()
-    .then((res) => {
+    // Much like the conosle log says...
+    console.log('Parsing db data')    
+    let ipList = new Array();
+    // purge unecesarry data (array of IPs)
+    devices.map(device => {
+        ipList.push(device.ip);
+    })
+
+    // Track ADB
+    adb.trackDevices();
+    // Connect to DB
+    adb.connectDevicesFromList(ipList)
+
+    adb.getDevices()
+    .then(res => {
         console.log(res)
     })
-})
 
-
-function wakeUp(id) {
-    let wakeCommand = 'input keyevent KEYCODE_WAKEUP';
-    client.shell(id, wakeCommand)
-    .then((err, output) => {
-        console.log(output)
-    })
+    return 0;
 }
 
-function reboot(id) {
-    client.reboot(id, (res) => {
-        if(res !== null) {
-            console.log(id, ' has rebooted succesfully!')
-        } else if (res !== null) {
-            console.log(id, 'has failed to reboot')
-        }
-    })
-}
+console.log('Initilizing ADB-daemon v1')
+// main();
+
+
+
+// Code to log to adb data to db
+// db.adbLog('10', "[ { id: '10.1.108.213:5555', type: 'device' }, { id: '10.1.108.22:5555', type: 'device' }, { id: '10.1.108.235:5555', type: 'device' }, { id: '10.1.108.219:5555', type: 'device' }, { id: '10.1.108.171:5555', type: 'device' } ]", '2021-07-12T21:16:16.713Z')
+console.log(db.timeCompare('2021-07-12T21:40:37.736Z'))

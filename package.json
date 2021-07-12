@@ -17,6 +17,14 @@
   },
   "homepage": "https://github.com/abevalle/adb-mon#readme",
   "dependencies": {
-    "adbkit": "^2.11.1"
+    "@devicefarmer/adbkit": "^3.2.0",
+    "bluebird": "^3.7.2",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "pg": "^8.6.0",
+    "socket.io": "^4.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }
