@@ -9,13 +9,10 @@ const io = require('socket.io')();
 // For testing purposes only
 // let devices = ['10.1.108.171', '10.1.108.213', '10.1.108.22', '10.1.108.219', '10.1.108.235'];
 let port = 5555;
-let pollingInt = 300 // milliseconds
-
-
 
 exports.connectDevicesFromList = async (list) => {
     console.log('Attempting to connect to device(s)')
-    devices.map((device) => {
+    list.map((device) => {
         client.connect(device, port)
             .then((resolve) => {
                 return true;

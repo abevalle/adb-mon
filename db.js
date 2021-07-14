@@ -35,7 +35,7 @@ exports.lastPollCheck = () => {
     .then(res => {
         let lastPoll = new Date(res.rows[0].timerecorded).toISOString().slice(0,-5)+"Z";
         let timeSinceLastCheck = this.timeCompare(lastPoll);
-        if(timeSinceLastCheck > 300000) {
+        if(timeSinceLastCheck > 300000 /* 5 MINUTES */) {
             console.log('Last polling time too old!')
         } else {
             return null;

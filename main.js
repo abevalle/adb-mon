@@ -28,10 +28,12 @@ const main = async  () => {
 }
 
 console.log('Initilizing ADB-daemon v1')
-// main();
+main();
 
 
 
 // Code to log to adb data to db
 // db.adbLog('10', "[ { id: '10.1.108.213:5555', type: 'device' }, { id: '10.1.108.22:5555', type: 'device' }, { id: '10.1.108.235:5555', type: 'device' }, { id: '10.1.108.219:5555', type: 'device' }, { id: '10.1.108.171:5555', type: 'device' } ]", '2021-07-12T21:16:16.713Z')
-console.log(db.timeCompare('2021-07-12T21:40:37.736Z'))
+
+//Code to compare last adb_log timestamp to new Date now()
+// console.log(db.timeCompare('2021-07-12T21:40:37.736Z'))
