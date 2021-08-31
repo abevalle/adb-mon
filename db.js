@@ -30,6 +30,14 @@ exports.getDeviceWatchList = () => {
     })
 }
 
+exports.wakeDevice = () => {
+    console.log('Waking sleeping device');
+    return new Promis(resolve => {
+        // Add adb command here to press button to wake device
+        // or code that sends wake command via adb
+    })
+}
+
 exports.lastPollCheck = () => {
     console.log('Checking last polling time');
     pool.query('SELECT * FROM adb_log')
