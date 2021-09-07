@@ -1,6 +1,8 @@
 const Bluebird = require('bluebird')
 const adb = require('@devicefarmer/adbkit').Adb;
 const client = adb.createClient();
+const db = require('./db')
+const poll = require('./socket');
 
 var fs = require('fs')
 const app = require('express')()
@@ -19,16 +21,22 @@ exports.connectDevicesFromList = async (list) => {
             })
     })
 }
+
+exports.getDeviceStatus = async (device) => {
+    let screenPower = await this.getDisplayPower(device);
+    let sleepStatus = await this.getSleepStatus(device);
+    return [screenPower, sleepStatus]
+}
+
 let deviceList = {};
 exports.getDevices = async (id) => {
-    let counter = 0;
     return new Promise ((resolve) => {
         client.listDevices()
         .then((dev) => {
             deviceList = {
                 qty: dev.length,
                 devices: dev,
-                timestamp: new Date().toLocaleTimeString()
+                timestamp: new Date().toISOString(),
             }
             resolve(deviceList);
         })
@@ -49,7 +57,7 @@ exports.adbCommand = async (id, command) => {
 exports.getDisplayPower = async(id) => {
     const command = 'dumpsys power | grep -e "Display Power"';
     return new Promise(resolve => {
-        adbCommand(id, command)
+        this.adbCommand(id, command)
         .then((res) => {
             let splitData = (res.split('='))
             resolve(splitData)
@@ -57,10 +65,10 @@ exports.getDisplayPower = async(id) => {
     })
 }
 
-exports.getDisplaySleepStatus = async (id) => {
+exports.getSleepStatus = async (id) => {
     const command = 'dumpsys power | grep -e "mWakefulness="'
     return new Promise(resolve => {
-        adbCommand(id, command)
+        this.adbCommand(id, command)
         .then((res) => {
             let splitData = (res.split('='))
             resolve(splitData)
@@ -76,9 +84,8 @@ exports.getScreen = async (id) => {
     })
 }
 
-
 // Client tracker functions 
-
+// Comeback here to integrate with websocket
 exports.trackDevices = async () => {
     console.log('ADB Tracking service starting')
     const tracker = await client.trackDevices();
@@ -103,9 +110,39 @@ exports.awaitDevice = (id) => {
     .then()
 }
 
+
+/* Howo to poll*/
+/* Get latest timestamp*/
+/* Comare now to most recent timestamp */
+/* if timestamp is older than x minutes */
+/* Get device info */
+/* Insert new data to db */
+/* repeat every x minutes */
+
 exports.poll = async (interval) => {
-    adb.getDevices()
-    .then(res => {
-        
-    })
+ 
+    // potentially have to rewrite this function :(
+    setInterval(() => {
+        this.getDevices()
+        .then(res => {
+            for(let r in res.devices) {
+                let currentDevice = res.devices[r].id
+                this.getDeviceStatus(currentDevice)
+                .then(status => {
+                    // Log device stastus to db
+                    res.devices[r]['state'] = status
+                    // socket emit event???                    
+                    // socket emit (ip, status)
+                    // Client will io.on(ip, 'deviceStatus', status)
+                    console.log(res.devices[r])
+                    poll.update(res.devices[r])
+                    this.getScreen(currentDevice).then(
+                        console.log('Succesfully screen captured '+currentDevice)
+                    )
+                })
+            }
+            db.adbLog(res.qty, res.devices, res.timestamp)
+        })
+    }, interval)
 }
+

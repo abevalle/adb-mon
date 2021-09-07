@@ -6,7 +6,8 @@ const pool = new Pool({
     host: process.env.DB_HOST,
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE
+    database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT
 })
 
 exports.addDevice = (id) => {
@@ -52,9 +53,7 @@ exports.timeCompare = (dbTime) => {
 }
 
 exports.adbLog = (qty, devices, timerecorded) => {
+    // let cleantime = new Date(timerecorded).toISOString().slice(0,-5)+"Z";
     console.log('Logging current ADB stats to DB');
-    pool.query('INSERT INTO adb_log (qty, devices, timerecorded) VALUES ($1,$2,$3) ', [qty, devices, this.timestampCleaner(timerecorded)])
-    .then(res => {
-        console.log(res)
-    })
+    pool.query('INSERT INTO adb_log (qty, devices, timestamp) VALUES ($1,$2,$3) ', [qty, devices, timerecorded])
 }

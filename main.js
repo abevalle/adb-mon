@@ -1,5 +1,19 @@
+const { Socket } = require('socket.io');
 const adb = require('./adb')
 const db = require('./db')
+const poll = require('./socket')
+
+
+/* 
+ToDo:
+* Check if there are IPs in the DB
+* Shutdown, Reboot function
+* Polling screenshot
+
+Long Term todo:
+* Upload Apk and install apk to certain devices
+* Process explorer - Kill, restart
+*/
 
 
 const main = async  () => {
@@ -18,22 +32,10 @@ const main = async  () => {
     adb.trackDevices();
     // Connect to DB
     adb.connectDevicesFromList(ipList)
-
-    adb.getDevices()
-    .then(res => {
-        console.log(res)
-    })
-
+    poll.startServ();
+    adb.poll(10000);
     return 0;
 }
 
 console.log('Initilizing ADB-daemon v1')
 main();
-
-
-
-// Code to log to adb data to db
-// db.adbLog('10', "[ { id: '10.1.108.213:5555', type: 'device' }, { id: '10.1.108.22:5555', type: 'device' }, { id: '10.1.108.235:5555', type: 'device' }, { id: '10.1.108.219:5555', type: 'device' }, { id: '10.1.108.171:5555', type: 'device' } ]", '2021-07-12T21:16:16.713Z')
-
-//Code to compare last adb_log timestamp to new Date now()
-// console.log(db.timeCompare('2021-07-12T21:40:37.736Z'))
