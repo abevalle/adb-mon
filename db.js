@@ -10,6 +10,10 @@ const pool = new Pool({
     port: process.env.DB_PORT
 })
 
+exports.findDevices = () => {
+    console.log('Looking for adb enabled devices...')
+}
+
 exports.addDevice = (id) => {
     pool.query('INSERT INTO devices(ip) VALUES ($1)', [id])
     .then(res => console.log(res))
@@ -36,6 +40,14 @@ exports.wakeDevice = () => {
         // Add adb command here to press button to wake device
         // or code that sends wake command via adb
     })
+}
+
+exports.shutdown = (id) => {
+    console.log('Shutting down ', id)
+}
+
+exports.reboot = (id) =>{
+    console.log('Rebooting ', id, ' now...')
 }
 
 exports.lastPollCheck = () => {

@@ -32,8 +32,9 @@
             let row = table.insertRow(rowCount)
 
             socket.onAny((event, status) => {
-                // console.log(new Date(status.timestamp).toLocaleString());
-                // console.log(status);
+                console.log(new Date(status.timestamp).toLocaleString());
+                console.log(status);
+                document.write();
                 
             });
         </script>
